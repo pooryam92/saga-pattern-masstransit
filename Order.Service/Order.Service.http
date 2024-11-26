@@ -1,0 +1,11 @@
+@Order.Service_HostAddress = http://localhost:4000
+
+POST {{Order.Service_HostAddress}}/Orders/
+Content-Type: application/json
+
+{
+    "Total": 100.00,
+    "Email": "test@example.com"
+}
+
+###

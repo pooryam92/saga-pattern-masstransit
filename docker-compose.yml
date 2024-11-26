@@ -1,0 +1,63 @@
+services:
+  order.service:
+    image: ${DOCKER_REGISTRY-}orderservice
+    build:
+      context: .
+      dockerfile: Order.Service/Dockerfile
+    environment:
+      - ConnectionStrings__Postgres=Host=postgres;Database=orderdb;Username=postgres;Password=postgres
+      - ConnectionStrings__RabbitMQ=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - 4000:8080
+      - 4001:8081
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  paymentservice:
+    image: ${DOCKER_REGISTRY-}paymentservice
+    build:
+      context: .
+      dockerfile: Payment.Service/Dockerfile
+    environment:
+      - ConnectionStrings__Postgres=Host=postgres;Database=orderdb;Username=postgres;Password=postgres
+      - ConnectionStrings__RabbitMQ=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - 5000:8080
+      - 5001:8081
+    depends_on:
+      - rabbitmq
+
+  inventory.service:
+    image: ${DOCKER_REGISTRY-}inventoryservice
+    build:
+      context: .
+      dockerfile: Inventory.Service/Dockerfile
+    environment:
+      - ConnectionStrings__Postgres=Host=postgres;Database=orderdb;Username=postgres;Password=postgres
+      - ConnectionStrings__RabbitMQ=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - 6000:8080
+      - 6001:8081
+    depends_on:
+      - rabbitmq
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orderdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  postgres_data:
