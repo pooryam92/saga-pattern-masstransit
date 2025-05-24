@@ -34,8 +34,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
 app.MapControllers();
 
 // Create database and run migrations
