@@ -71,7 +71,6 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
                 .Finalize()
         );
 
-        SetCompletedWhenFinalized();
     }
 
     public State ProcessingPayment { get; private set; }
